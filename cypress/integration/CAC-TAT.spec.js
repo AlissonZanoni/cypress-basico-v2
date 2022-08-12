@@ -96,11 +96,10 @@ describe('Central de Atendimento ao Cliente TAT', function() {
     })
 
     it('marca cada tipo de atendimento',function(){
-       cy.get('input[type="radio"]').check('feedback').should('have.value','feedback')
-       cy.get('input[type="radio"]').check('elogio').should('have.value','elogio')
-       cy.get('input[type="radio"]').check('ajuda').should('have.value','ajuda')
-       cy.get('.button').click()
-       cy.get('.error').should('be.visible')
+      cy.get('input[type="radio"]').should('have.length',3).each(function($radio){
+        cy.wrap($radio).check()
+        cy.wrap($radio).should('be.checked')
+      })
     })
 
     it('marca ambos checkboxes, depois desmarca o último',function(){
@@ -109,5 +108,38 @@ describe('Central de Atendimento ao Cliente TAT', function() {
         cy.get('.button').click()
         cy.get('.error').should('be.visible')
     })
+
+    it('seleciona um arquivo da pasta fixtures',function(){
+        cy.get('input[type="file"]').selectFile('cypress/fixtures/example.json')
+        .should(function($input){
+            expect($input[0].files[0].name).to.equal('example.json')
+        })
+    })
+
+    it('seleciona um arquivo simulando um drag-and-drop',function(){
+        //Simulando um arquivo sendo arrastado para cima do input 
+        cy.get('input[type="file"]').selectFile('cypress/fixtures/example.json', {action: 'drag-drop'})
+        .should(function($input){
+            expect($input[0].files[0].name).to.equal('example.json')
+        })
+    })
+
+    it('seleciona um arquivo usando fixture e dando um alias para ela',function(){
+        cy.fixture('example.json').as('file')
+        cy.get('input[type="file"]').selectFile('@file')
+        .should(function($input){
+            expect($input[0].files[0].name).to.equal('example.json')
+        })
+    })
+
+    it('verifica que a política de privacidade abre em outra aba sem a necessidade de um clique',function(){
+        cy.get('a').should('have.attr','target','_blank')
+    })
+
+    it('abrir a pagina de politicas de privacidade na mesma aba',function(){
+        cy.get('a').invoke('removeAttr','target').click()
+        cy.contains('Talking About ferrarri')
+    })
+
 })
 

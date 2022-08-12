@@ -138,7 +138,7 @@ describe('Central de Atendimento ao Cliente TAT', function() {
 
     it('abrir a pagina de politicas de privacidade na mesma aba',function(){
         cy.get('a').invoke('removeAttr','target').click()
-        cy.contains('Talking About ferrarri')
+        cy.contains('Talking About Testing')
     })
 
 })
